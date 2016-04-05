@@ -1,9 +1,6 @@
 {
-  "extends": ["airbnb", "plugin:react/recommended"],
+  "extends": ["airbnb"],
   "parser": "babel-eslint",
-  "globals": {
-    "cssInJS": true
-  },
   "rules": {
     "comma-dangle": 0,
     "no-console": 0,

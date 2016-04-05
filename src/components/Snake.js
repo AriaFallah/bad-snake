@@ -1,17 +1,14 @@
 // @flow
 
 import React, { Component } from 'react'
-import { checkCollision, createFood, createSnake, paintCell } from '../util'
+import type { Canvas, Pos, Snake } from '../types'
+import { createFood, createSnake, didLose, paintCell } from '../util'
 
-const Snake = class Snake extends Component {
-  ctx: Object;
-  cw: number = 10;
-  d: string;
-  food: Object;
-  h: number = 450;
+const Game = class Game extends Component {
+  canvas: Canvas = { cellWidth: 10, ctx: {}, height: 450, width: 450 };
+  food: Pos;
   score: number = 0;
-  snake: Array<Object>;
-  w: number = 450;
+  snake: Snake;
 
   componentDidMount() {
     this.init()
@@ -21,67 +18,66 @@ const Snake = class Snake extends Component {
 
   render() {
     return (
-      <canvas height={this.h} width={this.w} ref={this.setCanvas}></canvas>
+      <canvas height={this.canvas.height} width={this.canvas.width} ref={this.setCanvas}></canvas>
     )
   }
 
-  setCanvas: Function = (ref) => this.ctx = ref.getContext('2d');
+  setCanvas: Function = (ref) => this.canvas.ctx = ref.getContext('2d');
 
   init: Function = () => {
-    this.d = 'right'
-    this.food = createFood(this.w, this.h, this.cw)
-    this.snake = createSnake()
+    this.food = createFood(this.canvas)
+    this.snake = {
+      body: createSnake(5),
+      direction: 'right'
+    }
   };
 
   paint: Function = () => {
-    this.ctx.fillStyle = 'white'
-    this.ctx.strokeStyle = 'black'
-    this.ctx.fillRect(0, 0, this.w, this.h)
-    this.ctx.strokeRect(0, 0, this.w, this.h)
+    const { ctx, width, height } = this.canvas
+    const { body, direction } = this.snake
+    let { x, y } = body[0]
 
-    let nx = this.snake[0].x
-    let ny = this.snake[0].y
+    ctx.fillStyle = 'white'
+    ctx.strokeStyle = 'black'
+    ctx.fillRect(0, 0, width, height)
+    ctx.strokeRect(0, 0, width, height)
 
-    if (this.d === 'right') nx++
-    else if (this.d === 'left') nx--
-    else if (this.d === 'up') ny--
-    else if (this.d === 'down') ny++
+    if (direction === 'right') x++
+    else if (direction === 'left') x--
+    else if (direction === 'up') y--
+    else if (direction === 'down') y++
 
-    if (
-      nx === -1
-      || nx === this.w / this.cw
-      || ny === -1
-      || ny === this.w / this.cw
-      || checkCollision(nx, ny, this.snake)
-    ) this.init()
+    if (didLose(body, this.canvas, { x, y })) {
+      this.init()
+      return
+    }
 
     let tail = {}
-    if (nx === this.food.x && ny === this.food.y) {
-      tail = { x: nx, y: ny }
+    if (x === this.food.x && y === this.food.y) {
+      tail = { x, y }
       this.score++
-      createFood(this.w, this.h, this.cw)
+      createFood(this.canvas)
     } else {
       tail = this.snake.pop()
-      tail.x = nx
-      tail.y = ny
+      tail.x = x
+      tail.y = y
     }
     this.snake.unshift(tail)
 
     for (let i = 0; i < this.snake.length; i++) {
-      const c = this.snake[i]
-      paintCell(this.ctx, c.x, c.y, this.cw)
+      paintCell(this.canvas, body[i])
     }
 
-    paintCell(this.ctx, this.food.x, this.food.y, this.cw)
+    paintCell(this.canvas, this.food)
   };
 
   move: Function = (e: Object) => {
-    const key = e.keyCode
-    if (key === '37' && this.d !== 'right') this.d = 'left'
-    else if (key === '38' && this.d !== 'this.down') this.d = 'up'
-    else if (key === '39' && this.d !== 'left') this.d = 'right'
-    else if (key === '40' && this.d !== 'up') this.d = 'down'
+    const { keyCode } = e
+    if (keyCode === '37' && this.snake.direction !== 'right') this.snake.direction = 'left'
+    else if (keyCode === '38' && this.snake.direction !== 'down') this.snake.direction = 'up'
+    else if (keyCode === '39' && this.snake.direction !== 'left') this.snake.direction = 'right'
+    else if (keyCode === '40' && this.snake.direction !== 'up') this.snake.direction = 'down'
   };
 }
 
-export default Snake
+export default Game
