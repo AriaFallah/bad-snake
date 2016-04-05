@@ -1,3 +1,5 @@
+// @flow
+
 export type Canvas = {
   ctx: Object,
   cellWidth: number,

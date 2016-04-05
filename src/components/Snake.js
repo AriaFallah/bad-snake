@@ -12,8 +12,8 @@ const Game = class Game extends Component {
 
   componentDidMount() {
     this.init()
-    setInterval(this.paint, 60)
-    document.addEventListener('keyup', this.move)
+    setInterval(this.paint, 30)
+    document.addEventListener('keydown', this.move)
   }
 
   render() {
@@ -22,13 +22,13 @@ const Game = class Game extends Component {
     )
   }
 
-  setCanvas: Function = (ref) => this.canvas.ctx = ref.getContext('2d');
+  setCanvas: Function = (ref: Object) => this.canvas.ctx = ref.getContext('2d');
 
   init: Function = () => {
     this.food = createFood(this.canvas)
     this.snake = {
       body: createSnake(5),
-      direction: 'right'
+      direction: 'down'
     }
   };
 
@@ -56,15 +56,15 @@ const Game = class Game extends Component {
     if (x === this.food.x && y === this.food.y) {
       tail = { x, y }
       this.score++
-      createFood(this.canvas)
+      this.food = createFood(this.canvas)
     } else {
-      tail = this.snake.pop()
+      tail = this.snake.body.pop()
       tail.x = x
       tail.y = y
     }
-    this.snake.unshift(tail)
+    this.snake.body.unshift(tail)
 
-    for (let i = 0; i < this.snake.length; i++) {
+    for (let i = 0; i < body.length; i++) {
       paintCell(this.canvas, body[i])
     }
 
@@ -73,10 +73,11 @@ const Game = class Game extends Component {
 
   move: Function = (e: Object) => {
     const { keyCode } = e
-    if (keyCode === '37' && this.snake.direction !== 'right') this.snake.direction = 'left'
-    else if (keyCode === '38' && this.snake.direction !== 'down') this.snake.direction = 'up'
-    else if (keyCode === '39' && this.snake.direction !== 'left') this.snake.direction = 'right'
-    else if (keyCode === '40' && this.snake.direction !== 'up') this.snake.direction = 'down'
+    const { snake } = this
+    if (keyCode === 37 && snake.direction !== 'right') snake.direction = 'left'
+    else if (keyCode === 38 && snake.direction !== 'down') snake.direction = 'up'
+    else if (keyCode === 39 && snake.direction !== 'left') snake.direction = 'right'
+    else if (keyCode === 40 && snake.direction !== 'up') snake.direction = 'down'
   };
 }
 

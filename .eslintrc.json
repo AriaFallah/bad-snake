@@ -10,9 +10,7 @@
     "no-param-reassign": 0,
     "no-return-assign": 0,
     "no-confusing-arrow": [2, { "allowParens": true }],
-    "no-use-before-define": [2, "nofunc"],
-    "flow-vars/define-flow-type": 1,
-    "flow-vars/use-flow-type": 1
+    "no-use-before-define": [2, "nofunc"]
   },
-  "plugins":["react", "flow-vars"]
+  "plugins":["react"]
 }

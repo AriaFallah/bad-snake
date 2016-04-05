@@ -14,7 +14,7 @@ const styles = {
 
 export default radium(() =>
   <main style={styles}>
-    <h1>Reactive™ Snake</h1>
+    <h1>Snake™</h1>
     <Snake />
   </main>
 )

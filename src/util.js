@@ -29,7 +29,7 @@ export function createSnake(length: number): Array<Object> {
 
 // Check the lose conditions for the game
 export function didLose(body: Array<Object>, canvas: Canvas, head: Pos): boolean {
-  return isOutOfBounds(head, canvas) || collidingWithSelf(head, body)
+  return isOutOfBounds(canvas, head) || collidingWithSelf(head, body)
 }
 
 // Check if the snake has left the canvas
