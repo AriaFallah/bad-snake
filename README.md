@@ -1,3 +1,3 @@
-# Reactive Snake :snake:
+# Bad Snake :snake:
 
-Overengineering a snake game using react + mobx + flow + babel
+This is broken.
